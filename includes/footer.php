@@ -16,7 +16,11 @@
             <div class="footer-brand">
 
                 <a href="/index.php" class="navbar-logo">
+
+
+                <a href="/index.php" class="navbar-logo">
                 <a href="/" class="navbar-logo">
+
                     <span class="logo-icon">✦</span>
                     <span class="logo-text"><?= SITE_NAME ?></span>
                 </a>
@@ -58,6 +62,7 @@
             </div>
         </div>
     </footer>
+
     <script src="<?= ASSETS_URL ?>/js/auth.js"></script>
     <script src="<?= ASSETS_URL ?>/js/main.js"></script>
     <?php if (!empty($extraJs)): ?>
@@ -65,7 +70,9 @@
     <script src="<?= ASSETS_URL ?>/js/<?= htmlspecialchars($js) ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
+
     <script src="<?= ASSETS_URL ?>/js/main.js"></script>
+
 
 </body>
 </html>

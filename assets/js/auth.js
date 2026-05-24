@@ -62,6 +62,61 @@ const Auth = {
     return true;
   },
 
+
+  isAdmin() {
+    return this.getUser()?.role === 'admin';
+  },
+
+  requireAdmin() {
+    if (!this.requireAuth('/login.php')) return false;
+    if (!this.isAdmin()) {
+      window.location.href = '/dashboard.php';
+      return false;
+    }
+    return true;
+  },
+
+  updateProfile(name, email) {
+    const users = this._getUsers();
+    const session = this.getUser();
+    if (!session) return { success: false, message: 'Not logged in.' };
+
+    const idx = users.findIndex((u) => u.id === session.id);
+    if (idx < 0) return { success: false, message: 'User not found.' };
+
+    const normalized = email.trim().toLowerCase();
+    if (users.some((u) => u.email === normalized && u.id !== session.id)) {
+      return { success: false, message: 'Email already in use.' };
+    }
+
+    users[idx].name = name.trim();
+    users[idx].email = normalized;
+    localStorage.setItem('afrochick-users', JSON.stringify(users));
+
+    const updated = { ...session, name: users[idx].name, email: users[idx].email };
+    localStorage.setItem(AUTH_KEY, JSON.stringify(updated));
+    return { success: true, user: updated };
+  },
+
+  updatePassword(currentPassword, newPassword) {
+    const users = this._getUsers();
+    const session = this.getUser();
+    if (!session) return { success: false, message: 'Not logged in.' };
+
+    const idx = users.findIndex((u) => u.id === session.id);
+    if (idx < 0 || users[idx].password !== currentPassword) {
+      return { success: false, message: 'Current password is incorrect.' };
+    }
+    if (newPassword.length < 8) {
+      return { success: false, message: 'New password must be at least 8 characters.' };
+    }
+
+    users[idx].password = newPassword;
+    localStorage.setItem('afrochick-users', JSON.stringify(users));
+    return { success: true, message: 'Password updated successfully.' };
+  },
+
+
   _getUsers() {
     try {
       const data = localStorage.getItem('afrochick-users');
@@ -89,6 +144,10 @@ function initAuthNav() {
     signupBtn?.classList.add('hidden');
     userMenu?.classList.remove('hidden');
     if (userName) userName.textContent = user.name.split(' ')[0];
+
+    if (user.role === 'admin') {
+      document.getElementById('nav-admin-link')?.classList.remove('hidden');
+    }
     logoutBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       Auth.logout();

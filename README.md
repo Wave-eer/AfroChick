@@ -12,6 +12,11 @@ Premium Skin Analysis & Hair Protection Center — a luxury dermatology-inspired
 
 ```
 afrochick/
+├── admin/
+│   ├── index.php          # Analytics dashboard
+│   ├── products.php       # Product CRUD
+│   └── settings.php       # Profile, password, preferences
+
 ├── index.php              # Landing page (Home)
 ├── login.php              # Login
 ├── signup.php             # Sign up
@@ -21,7 +26,7 @@ afrochick/
 ├── hair-analysis.php      # Hair wizard (stub)
 ├── products.php           # Product center
 ├── submit-product.php       # Submit product form
-=======
+
 ├── index.php              # Landing page
 ├── includes/
 │   ├── config.php         # Site constants & helpers
@@ -42,6 +47,7 @@ afrochick/
 ├── products.php           # (planned) Product center
 ├── submit-product.php     # (planned) Product submission
 └── admin/                 # (planned) Admin dashboard
+
 ```
 
 ## Run Locally
@@ -54,6 +60,10 @@ docker compose up --build
 ```
 
 Open [http://localhost:8888](http://localhost:8888)
+
+
+**Admin:** `admin@afrochick.com` / `admin1234` → `/admin/index.php`
+
 
 ### PHP built-in server
 
@@ -79,11 +89,16 @@ Open [http://localhost:8888](http://localhost:8888)
 1. ✅ Landing page
 2. ✅ Auth pages (login, signup, forgot password)
 3. ✅ Dashboard (Analyze) + product pages
+
+4. ✅ Admin dashboard
+5. Analysis wizards (skin & hair)
+
 4. Analysis wizards (skin & hair)
-=======
+
 2. Auth pages (login, signup, forgot password)
 3. Dashboard & analysis wizards
 4. Product center & submission
 
 5. Admin dashboard
+
 6. Supabase integration

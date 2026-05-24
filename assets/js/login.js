@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!form) return;
 
   if (Auth.isLoggedIn()) {
+    window.location.href = getNextUrl(Auth.getUser());
     window.location.href = getNextUrl();
+
     return;
   }
 
@@ -35,7 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const msg = document.getElementById('form-message');
 
     if (result.success) {
+
+      window.location.href = getNextUrl(result.user);
+
       window.location.href = getNextUrl();
+ main
     } else {
       msg.textContent = result.message;
       msg.className = 'form-message error';
@@ -44,7 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+function getNextUrl(user) {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('next')) return params.get('next');
+  if (user?.role === 'admin') return '/admin/index.php';
+  return '/dashboard.php';
+
 function getNextUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get('next') || '/dashboard.php';
+
 }

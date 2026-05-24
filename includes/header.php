@@ -32,19 +32,25 @@ $currentPage = $currentPage ?? 'home';
     <header class="navbar" id="navbar">
         <div class="navbar-inner">
             <a href="/index.php" class="navbar-logo">
+
+
 </head>
 <body>
     <!-- Navbar -->
     <header class="navbar" id="navbar">
         <div class="navbar-inner">
             <a href="/" class="navbar-logo">
+
                 <span class="logo-icon">✦</span>
                 <span class="logo-text"><?= SITE_NAME ?></span>
             </a>
 
             <nav class="navbar-nav" id="navbar-nav">
                 <a href="/index.php" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
+
+
                 <a href="/" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
+
                 <a href="/dashboard.php" class="nav-link <?= $currentPage === 'analyze' ? 'active' : '' ?>">Analyze</a>
                 <a href="/products.php" class="nav-link <?= $currentPage === 'products' ? 'active' : '' ?>">Products</a>
                 <a href="/submit-product.php" class="nav-link <?= $currentPage === 'submit' ? 'active' : '' ?>">Submit</a>
@@ -61,10 +67,16 @@ $currentPage = $currentPage ?? 'home';
                 <a href="/login.php" class="btn btn-ghost btn-sm nav-login" id="nav-login-btn">Login</a>
                 <div class="nav-user-menu hidden" id="nav-user-menu">
                     <span class="nav-user-name" id="nav-user-name">User</span>
+
+                    <a href="/admin/index.php" class="btn btn-ghost btn-sm hidden" id="nav-admin-link">Admin</a>
+                    <a href="/dashboard.php" class="btn btn-ghost btn-sm">Analyze</a>
+                    <button type="button" class="btn btn-ghost btn-sm" id="nav-logout-btn">Logout</button>
+                </div>
                     <a href="/dashboard.php" class="btn btn-ghost btn-sm">Analyze</a>
                     <button type="button" class="btn btn-ghost btn-sm" id="nav-logout-btn">Logout</button>
                 </div>
                 <a href="/login.php" class="btn btn-ghost btn-sm nav-login">Login</a>
+
                 <button class="btn-icon hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
                     <i data-lucide="menu"></i>
                 </button>
