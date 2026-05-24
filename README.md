@@ -12,6 +12,16 @@ Premium Skin Analysis & Hair Protection Center — a luxury dermatology-inspired
 
 ```
 afrochick/
+├── index.php              # Landing page (Home)
+├── login.php              # Login
+├── signup.php             # Sign up
+├── forgot-password.php    # Password reset
+├── dashboard.php          # Analyze — skin or hair selection
+├── skin-analysis.php      # Skin wizard (stub)
+├── hair-analysis.php      # Hair wizard (stub)
+├── products.php           # Product center
+├── submit-product.php       # Submit product form
+=======
 ├── index.php              # Landing page
 ├── includes/
 │   ├── config.php         # Site constants & helpers
@@ -67,8 +77,13 @@ Open [http://localhost:8888](http://localhost:8888)
 ## Build Roadmap
 
 1. ✅ Landing page
+2. ✅ Auth pages (login, signup, forgot password)
+3. ✅ Dashboard (Analyze) + product pages
+4. Analysis wizards (skin & hair)
+=======
 2. Auth pages (login, signup, forgot password)
 3. Dashboard & analysis wizards
 4. Product center & submission
+
 5. Admin dashboard
 6. Supabase integration

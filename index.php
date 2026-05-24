@@ -2,6 +2,8 @@
 $pageTitle = 'Skin & Hair Analysis Center';
 $pageDescription = 'Clinical-grade skin & hair analysis with personalized routines, nutrients, and ingredient guidance.';
 $currentPage = 'home';
+$bodyClass = 'page-home';
+$showFloatingCta = true;
 require_once __DIR__ . '/includes/header.php';
 ?>
 

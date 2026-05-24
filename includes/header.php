@@ -21,6 +21,17 @@ $currentPage = $currentPage ?? 'home';
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 
     <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/style.css">
+    <?php if (!empty($extraCss)): ?>
+        <?php foreach ((array)$extraCss as $css): ?>
+    <link rel="stylesheet" href="<?= ASSETS_URL ?>/css/<?= htmlspecialchars($css) ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
+</head>
+<body class="<?= htmlspecialchars($bodyClass ?? '') ?>">
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="/index.php" class="navbar-logo">
 </head>
 <body>
     <!-- Navbar -->
@@ -32,6 +43,7 @@ $currentPage = $currentPage ?? 'home';
             </a>
 
             <nav class="navbar-nav" id="navbar-nav">
+                <a href="/index.php" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
                 <a href="/" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
                 <a href="/dashboard.php" class="nav-link <?= $currentPage === 'analyze' ? 'active' : '' ?>">Analyze</a>
                 <a href="/products.php" class="nav-link <?= $currentPage === 'products' ? 'active' : '' ?>">Products</a>
@@ -39,10 +51,19 @@ $currentPage = $currentPage ?? 'home';
             </nav>
 
             <div class="navbar-actions">
+                <a href="/dashboard.php" class="btn btn-primary btn-sm nav-start hidden-mobile" id="nav-start-btn">Start analysis</a>
                 <button class="btn-icon theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
                     <i data-lucide="sun" class="icon-sun"></i>
                     <i data-lucide="moon" class="icon-moon"></i>
                 </button>
+
+                <a href="/signup.php" class="btn btn-secondary btn-sm nav-signup" id="nav-signup-btn">Sign up</a>
+                <a href="/login.php" class="btn btn-ghost btn-sm nav-login" id="nav-login-btn">Login</a>
+                <div class="nav-user-menu hidden" id="nav-user-menu">
+                    <span class="nav-user-name" id="nav-user-name">User</span>
+                    <a href="/dashboard.php" class="btn btn-ghost btn-sm">Analyze</a>
+                    <button type="button" class="btn btn-ghost btn-sm" id="nav-logout-btn">Logout</button>
+                </div>
                 <a href="/login.php" class="btn btn-ghost btn-sm nav-login">Login</a>
                 <button class="btn-icon hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
                     <i data-lucide="menu"></i>

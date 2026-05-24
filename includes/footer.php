@@ -1,15 +1,21 @@
     </main>
 
+    <?php if (!empty($showFloatingCta)): ?>
+
     <!-- Floating CTA -->
     <a href="/dashboard.php" class="floating-cta" id="floating-cta" aria-label="Start analysis">
         <i data-lucide="sparkles"></i>
         <span>Start analysis</span>
     </a>
 
+    <?php endif; ?>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-brand">
+
+                <a href="/index.php" class="navbar-logo">
                 <a href="/" class="navbar-logo">
                     <span class="logo-icon">✦</span>
                     <span class="logo-text"><?= SITE_NAME ?></span>
@@ -52,7 +58,14 @@
             </div>
         </div>
     </footer>
-
+    <script src="<?= ASSETS_URL ?>/js/auth.js"></script>
     <script src="<?= ASSETS_URL ?>/js/main.js"></script>
+    <?php if (!empty($extraJs)): ?>
+        <?php foreach ((array)$extraJs as $js): ?>
+    <script src="<?= ASSETS_URL ?>/js/<?= htmlspecialchars($js) ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <script src="<?= ASSETS_URL ?>/js/main.js"></script>
+
 </body>
 </html>
