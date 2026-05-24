@@ -1,23 +1,32 @@
 <?php
-header('Content-Type: application/json');
+require_once dirname(__DIR__) . '/includes/api_helpers.php';
+apiBootstrap();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
-    exit;
+    jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
 }
 
-$email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
+$body = readJsonBody();
+$email = filter_var(trim($body['email'] ?? $_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 
 if (!$email) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
-    exit;
+    jsonResponse(['success' => false, 'message' => 'Please enter a valid email address.'], 400);
 }
 
-// TODO: Save to Supabase or database when connected
-// For now, mock success response
-echo json_encode([
-    'success' => true,
-    'message' => 'Thank you for subscribing! Check your inbox for a confirmation.',
-]);
+try {
+    $pdo = db();
+    $stmt = $pdo->prepare('INSERT INTO newsletter_subscribers (email) VALUES (?)');
+    $stmt->execute([$email]);
+    jsonResponse([
+        'success' => true,
+        'message' => 'Thank you for subscribing! Check your inbox for a confirmation.',
+    ]);
+} catch (PDOException $e) {
+    if ((int) $e->getCode() === 23000) {
+        jsonResponse([
+            'success' => true,
+            'message' => 'You are already subscribed.',
+        ]);
+    }
+    jsonResponse(['success' => false, 'message' => 'Could not subscribe. Please try again.'], 500);
+}

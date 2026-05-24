@@ -1,7 +1,8 @@
 /**
  * Afrochick — Admin shared utilities
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await Auth.refresh();
   if (!Auth.requireAdmin()) return;
 
   const user = Auth.getUser();

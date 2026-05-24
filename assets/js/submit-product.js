@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formWrap?.classList.remove('hidden');
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearFormErrors(form);
 
@@ -51,12 +51,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!valid) return;
 
-    const submissions = JSON.parse(localStorage.getItem('afrochick-submissions') || '[]');
-    submissions.push({ ...data, id: Date.now(), status: 'pending', createdAt: new Date().toISOString() });
-    localStorage.setItem('afrochick-submissions', JSON.stringify(submissions));
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
 
-    formWrap?.classList.add('hidden');
-    success?.classList.remove('hidden');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+    try {
+      await Api.post('/api/submissions.php', data);
+      formWrap?.classList.add('hidden');
+      success?.classList.remove('hidden');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    } catch (err) {
+      const msg = document.getElementById('form-message');
+      if (msg) {
+        msg.textContent = err.data?.message || 'Submission failed. Please try again.';
+        msg.className = 'form-message error';
+        msg.hidden = false;
+      }
+    } finally {
+      btn.disabled = false;
+    }
   });
 });

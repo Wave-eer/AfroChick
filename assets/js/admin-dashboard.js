@@ -1,12 +1,23 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await Auth.refresh();
   if (!Auth.requireAdmin()) return;
 
-  const stats = AdminStore.getStats();
-  renderStats(stats);
-  renderAnalysisChart(stats);
-  renderProductChart(stats);
-  renderAnalysesTable();
-  renderSubmissionsTable();
+  try {
+    const stats = await AdminStore.getStats();
+    renderStats(stats);
+    renderAnalysisChart(stats);
+    renderProductChart(stats);
+
+    const analyses = await AdminStore.getAnalyses();
+    renderAnalysesTable(analyses);
+
+    const submissions = await AdminStore.getSubmissions();
+    renderSubmissionsTable(submissions.filter((s) => s.status === 'pending'));
+  } catch (e) {
+    console.error(e);
+    showToast('Could not load dashboard data', 'error');
+  }
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 
@@ -49,15 +60,14 @@ function renderAnalysisChart(s) {
       <span class="bar-label">Hair</span>
       <div class="bar-track"><div class="bar-fill bar-blue" style="width:${(s.hairAnalyses / total) * 100}%"></div></div>
       <span class="bar-value">${s.hairAnalyses}</span>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderProductChart(s) {
   const el = document.getElementById('product-chart');
   if (!el) return;
   const total = s.totalProducts || 1;
-  const other = s.totalProducts - s.approvedProducts - s.pendingProducts;
+  const other = Math.max(0, s.totalProducts - s.approvedProducts - s.pendingProducts);
   el.innerHTML = `
     <div class="bar-row">
       <span class="bar-label">Approved</span>
@@ -71,24 +81,20 @@ function renderProductChart(s) {
     </div>
     <div class="bar-row">
       <span class="bar-label">Other</span>
-      <div class="bar-track"><div class="bar-fill bar-muted" style="width:${Math.max(0, (other / total) * 100)}%"></div></div>
-      <span class="bar-value">${Math.max(0, other)}</span>
-    </div>
-  `;
+      <div class="bar-track"><div class="bar-fill bar-muted" style="width:${(other / total) * 100}%"></div></div>
+      <span class="bar-value">${other}</span>
+    </div>`;
 }
 
-function renderAnalysesTable() {
+function renderAnalysesTable(rows) {
   const tbody = document.querySelector('#analyses-table tbody');
   if (!tbody) return;
 
-  const rows = AdminStore.getAnalyses()
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 8);
-
+  const list = rows.slice(0, 8);
   tbody.innerHTML =
-    rows.length === 0
+    list.length === 0
       ? '<tr><td colspan="4" class="table-empty">No analyses yet</td></tr>'
-      : rows
+      : list
           .map(
             (a) => `
       <tr>
@@ -101,13 +107,9 @@ function renderAnalysesTable() {
           .join('');
 }
 
-function renderSubmissionsTable() {
+function renderSubmissionsTable(rows) {
   const tbody = document.querySelector('#submissions-table tbody');
   if (!tbody) return;
-
-  const rows = AdminStore.getSubmissions()
-    .filter((s) => s.status === 'pending')
-    .slice(0, 8);
 
   tbody.innerHTML =
     rows.length === 0

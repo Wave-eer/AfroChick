@@ -1,13 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('signup-form');
   if (!form) return;
 
   if (Auth.isLoggedIn()) {
-    window.location.href = getNextUrl();
+    window.location.href = getNextUrl(Auth.getUser());
     return;
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearFormErrors(form);
 
@@ -35,11 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!valid) return;
 
-    const result = Auth.signup(name, email, password);
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    const result = await Auth.signup(name, email, password);
+    btn.disabled = false;
+
     const msg = document.getElementById('form-message');
 
     if (result.success) {
-      window.location.href = getNextUrl();
+      window.location.href = getNextUrl(result.user);
     } else {
       msg.textContent = result.message;
       msg.className = 'form-message error';
@@ -48,7 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function getNextUrl() {
+function getNextUrl(user) {
   const params = new URLSearchParams(window.location.search);
-  return params.get('next') || '/dashboard.php';
+  if (params.get('next')) return params.get('next');
+  if (user?.role === 'admin') return '/admin/index.php';
+  return '/dashboard.php';
 }

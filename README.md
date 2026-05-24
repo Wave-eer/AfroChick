@@ -5,8 +5,37 @@ Premium Skin Analysis & Hair Protection Center — a luxury dermatology-inspired
 ## Tech Stack
 
 - **HTML / CSS / JavaScript** — frontend
-- **PHP** — server-side includes, form handling, API stubs
-- **Supabase** — auth, database, storage (planned; mock data for now)
+- **PHP 8.3** — API & server-side includes
+- **MySQL 8** — database `afrochick` (users, products, submissions, analyses, newsletter)
+
+## Database
+
+MySQL database **`afrochick`** with tables:
+
+| Table | Purpose |
+|-------|---------|
+| `users` | Accounts (bcrypt passwords) |
+| `products` | Product catalog |
+| `product_submissions` | Public submit form |
+| `analyses` | Skin/hair analysis log |
+| `newsletter_subscribers` | Newsletter emails |
+| `admin_settings` | Admin preferences (JSON) |
+
+Schema: `database/schema.sql` — auto-applied on first Docker start.
+
+Seed data (demo user, admin, 10 products) runs automatically when `users` table is empty.
+
+**Credentials (Docker):**
+
+| | |
+|--|--|
+| Database | `afrochick` |
+| User | `afrochick` |
+| Password | `afrochick_secret` |
+| Host (from web container) | `db` |
+| Host (from your machine) | `localhost:3307` |
+
+Check connection: [http://localhost:8888/api/health.php](http://localhost:8888/api/health.php)
 
 ## Project Structure
 
@@ -16,7 +45,9 @@ afrochick/
 │   ├── index.php          # Analytics dashboard
 │   ├── products.php       # Product CRUD
 │   └── settings.php       # Profile, password, preferences
-├── index.php              # Landing page (Home)
+├── database/
+│   └── schema.sql         # MySQL tables
+├── api/                   # JSON REST API → MySQL
 ├── login.php              # Login
 ├── signup.php             # Sign up
 ├── forgot-password.php    # Password reset
@@ -33,10 +64,10 @@ afrochick/
 
 ```bash
 cd afrochick
-docker compose up --build
+docker compose up --build -d
 ```
 
-Open [http://localhost:8888](http://localhost:8888)
+Wait until MySQL is healthy (~30s on first run), then open [http://localhost:8888](http://localhost:8888)
 
 **Admin:** `admin@afrochick.com` / `admin1234` → `/admin/index.php`
 
@@ -66,4 +97,3 @@ Open [http://localhost:8888](http://localhost:8888)
 3. ✅ Dashboard (Analyze) + product pages
 4. ✅ Admin dashboard
 5. Analysis wizards (skin & hair)
-6. Supabase integration

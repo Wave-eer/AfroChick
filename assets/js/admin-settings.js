@@ -1,8 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await Auth.refresh();
   if (!Auth.requireAdmin()) return;
 
   const user = Auth.getUser();
-  const settings = AdminStore.getSettings();
+  let settings = {};
+  try {
+    settings = await AdminStore.getSettings();
+  } catch {
+    settings = {};
+  }
 
   document.getElementById('profile-name').value = user?.name || '';
   document.getElementById('profile-email').value = user?.email || '';
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.getElementById('profile-form')?.addEventListener('submit', (e) => {
+  document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     clearFormErrors(form);
@@ -28,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!name.value.trim()) { showFieldError(name, 'Name is required'); return; }
     if (!validateEmail(email.value)) { showFieldError(email, 'Valid email required'); return; }
 
-    const result = Auth.updateProfile(name.value, email.value);
+    const result = await Auth.updateProfile(name.value, email.value);
     const msg = document.getElementById('profile-message');
     msg.textContent = result.success ? 'Profile updated.' : result.message;
     msg.className = 'form-message ' + (result.success ? 'success' : 'error');
@@ -39,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('password-form')?.addEventListener('submit', (e) => {
+  document.getElementById('password-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     clearFormErrors(form);
@@ -51,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newPw.value.length < 8) { showFieldError(newPw, 'Min 8 characters'); return; }
     if (newPw.value !== confirm.value) { showFieldError(confirm, 'Passwords do not match'); return; }
 
-    const result = Auth.updatePassword(current.value, newPw.value);
+    const result = await Auth.updatePassword(current.value, newPw.value);
     const msg = document.getElementById('password-message');
-    msg.textContent = result.success ? result.message : result.message;
+    msg.textContent = result.message;
     msg.className = 'form-message ' + (result.success ? 'success' : 'error');
     msg.hidden = false;
     if (result.success) {
@@ -62,17 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('general-form')?.addEventListener('submit', (e) => {
+  document.getElementById('general-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    AdminStore.saveSettings({
-      emailNotifications: document.getElementById('pref-notifications').checked,
-      autoApprove: document.getElementById('pref-auto-approve').checked,
-      timezone: document.getElementById('pref-timezone').value,
-    });
-    const msg = document.getElementById('general-message');
-    msg.textContent = 'Preferences saved.';
-    msg.className = 'form-message success';
-    msg.hidden = false;
-    showToast('Preferences saved');
+    try {
+      await AdminStore.saveSettings({
+        emailNotifications: document.getElementById('pref-notifications').checked,
+        autoApprove: document.getElementById('pref-auto-approve').checked,
+        timezone: document.getElementById('pref-timezone').value,
+      });
+      const msg = document.getElementById('general-message');
+      msg.textContent = 'Preferences saved.';
+      msg.className = 'form-message success';
+      msg.hidden = false;
+      showToast('Preferences saved');
+    } catch (err) {
+      showToast(err.data?.message || 'Could not save preferences', 'error');
+    }
   });
 });
