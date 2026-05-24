@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await Auth.refresh();
   if (!Auth.requireAdmin()) return;
 
   let deleteId = null;
@@ -22,27 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('modal-cancel')?.addEventListener('click', closeModal);
   modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
   document.getElementById('delete-cancel')?.addEventListener('click', () => deleteModal?.classList.add('hidden'));
-  document.getElementById('delete-confirm')?.addEventListener('click', confirmDelete);
+  document.getElementById('delete-confirm')?.addEventListener('click', () => confirmDelete());
 
   document.getElementById('admin-product-search')?.addEventListener('input', renderTable);
   document.getElementById('admin-status-filter')?.addEventListener('change', renderTable);
 
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (viewOnly) return;
-    saveProduct();
+    await saveProduct();
   });
 
-  renderTable();
+  await renderTable();
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
-  function renderTable() {
+  async function renderTable() {
     const tbody = document.getElementById('products-tbody');
     const empty = document.getElementById('products-empty');
     const q = document.getElementById('admin-product-search')?.value.trim().toLowerCase() || '';
     const statusFilter = document.getElementById('admin-status-filter')?.value || 'all';
 
-    let list = ProductStore.getAll();
+    let list = await ProductStore.getAll();
     if (statusFilter !== 'all') list = list.filter((p) => p.status === statusFilter);
     if (q) {
       list = list.filter((p) => {
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  function openModal(mode, id) {
+  async function openModal(mode, id) {
     viewOnly = mode === 'view';
     form.classList.toggle('hidden', viewOnly);
     viewPanel.classList.toggle('hidden', !viewOnly);
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('product-status').value = 'approved';
       document.getElementById('product-image').value = '🧴';
     } else {
-      const p = ProductStore.getById(id);
+      const p = await ProductStore.getById(id);
       if (!p) return;
       if (viewOnly) {
         viewPanel.innerHTML = `
@@ -152,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     viewOnly = false;
   }
 
-  function saveProduct() {
+  async function saveProduct() {
     const name = document.getElementById('product-name');
     const category = document.getElementById('product-category');
     const ingredients = document.getElementById('product-ingredients');
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!valid) return;
 
     const idVal = document.getElementById('product-id').value;
-    ProductStore.save({
+    await ProductStore.save({
       id: idVal ? Number(idVal) : undefined,
       name: name.value,
       category: category.value,
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     closeModal();
-    renderTable();
+    await renderTable();
     showToast('Product saved successfully');
   }
 
@@ -191,11 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
     deleteModal?.classList.remove('hidden');
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (deleteId) {
-      ProductStore.delete(deleteId);
+      await ProductStore.delete(deleteId);
       showToast('Product deleted');
-      renderTable();
+      await renderTable();
     }
     deleteId = null;
     deleteModal?.classList.add('hidden');

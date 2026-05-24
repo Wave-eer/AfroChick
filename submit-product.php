@@ -76,6 +76,6 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <?php
-$extraJs = ['mockData.js', 'submit-product.js'];
+$extraJs = ['mockData.js', 'api.js', 'submit-product.js'];
 require_once __DIR__ . '/includes/footer.php';
 ?>

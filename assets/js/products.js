@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const grid = document.getElementById('products-grid');
   const tabs = document.getElementById('category-tabs');
   const search = document.getElementById('product-search');
@@ -6,8 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('product-modal');
   if (!grid || !tabs) return;
 
+  let allProducts = [];
   let activeCategory = 'All';
   let query = '';
+
+  try {
+    allProducts = await ProductStore.getApproved();
+  } catch {
+    allProducts = typeof MOCK_PRODUCTS !== 'undefined'
+      ? MOCK_PRODUCTS.filter((p) => p.status === 'approved')
+      : [];
+  }
 
   PRODUCT_CATEGORIES.forEach((cat) => {
     const btn = document.createElement('button');
@@ -40,31 +49,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getFiltered() {
 
+    return allProducts.filter((p) => {
+
+
     const source = typeof ProductStore !== 'undefined' ? ProductStore.getApproved() : MOCK_PRODUCTS.filter((p) => p.status === 'approved');
     return source.filter((p) => {
 
     return MOCK_PRODUCTS.filter((p) => {
       if (p.status !== 'approved') return false;
-
       if (activeCategory !== 'All' && p.category !== activeCategory) return false;
       if (!query) return true;
-      const hay = [p.name, p.category, p.description, ...p.ingredients, ...p.benefits].join(' ').toLowerCase();
+      const hay = [p.name, p.category, p.description, ...(p.ingredients || []), ...(p.benefits || [])].join(' ').toLowerCase();
       return hay.includes(query);
     });
   }
 
   function render() {
     const items = getFiltered();
-    grid.innerHTML = items.map((p) => `
-      <article class="glass-card product-card reveal" data-id="${p.id}">
+    grid.innerHTML = items
+      .map(
+        (p) => `
+      <article class="glass-card product-card reveal visible" data-id="${p.id}">
         <div class="product-image">${p.image}</div>
         <div class="product-info">
           <span class="product-category">${p.category}</span>
           <h3>${p.name}</h3>
           <p class="product-price">${p.price}</p>
         </div>
-      </article>
-    `).join('');
+      </article>`
+      )
+      .join('');
 
     empty?.classList.toggle('hidden', items.length > 0);
 
@@ -73,14 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
-    initScrollRevealCards();
   }
 
   function openModal(id) {
 
+    const p = allProducts.find((x) => x.id === id);
+
     const p = (typeof ProductStore !== 'undefined' ? ProductStore.getAll() : MOCK_PRODUCTS).find((x) => x.id === id);
 
     const p = MOCK_PRODUCTS.find((x) => x.id === id);
+
 
     if (!p || !modal) return;
 
@@ -92,13 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="modal-desc">${p.description}</p>
       <div class="modal-section">
         <h4>Ingredients</h4>
-        <ul class="tag-list">${p.ingredients.map((i) => `<li>${i}</li>`).join('')}</ul>
+        <ul class="tag-list">${(p.ingredients || []).map((i) => `<li>${i}</li>`).join('')}</ul>
       </div>
       <div class="modal-section">
         <h4>Benefits</h4>
-        <ul class="tag-list benefits">${p.benefits.map((b) => `<li>${b}</li>`).join('')}</ul>
-      </div>
-    `;
+        <ul class="tag-list benefits">${(p.benefits || []).map((b) => `<li>${b}</li>`).join('')}</ul>
+      </div>`;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -107,21 +122,5 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeModal() {
     modal?.classList.add('hidden');
     document.body.style.overflow = '';
-  }
-
-  function initScrollRevealCards() {
-    const cards = grid.querySelectorAll('.product-card:not(.visible)');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    cards.forEach((el) => observer.observe(el));
   }
 });

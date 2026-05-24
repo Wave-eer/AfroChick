@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('login-form');
   if (!form) return;
 
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     signupLink.href = '/signup.php?next=' + encodeURIComponent(params.get('next'));
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearFormErrors(form);
 
@@ -33,7 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!valid) return;
 
-    const result = Auth.login(email, password);
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    const result = await Auth.login(email, password);
+    btn.disabled = false;
+
     const msg = document.getElementById('form-message');
 
     if (result.success) {

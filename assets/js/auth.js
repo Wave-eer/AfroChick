@@ -1,5 +1,5 @@
 /**
- * Afrochick — Mock authentication (localStorage)
+ * Afrochick — Authentication (PHP session + API / MySQL)
  */
 const AUTH_KEY = 'afrochick-auth';
 
@@ -13,43 +13,64 @@ const Auth = {
     }
   },
 
+  _setUser(user) {
+    if (user) {
+      localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(AUTH_KEY);
+    }
+  },
+
   isLoggedIn() {
     return !!this.getUser();
   },
 
-  login(email, password) {
-    const users = this._getUsers();
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (!user) return { success: false, message: 'Invalid email or password.' };
-
-    const session = { id: user.id, name: user.name, email: user.email, role: user.role || 'user' };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(session));
-    return { success: true, user: session };
-  },
-
-  signup(name, email, password) {
-    const users = this._getUsers();
-    if (users.some((u) => u.email === email)) {
-      return { success: false, message: 'An account with this email already exists.' };
+  async refresh() {
+    try {
+      const res = await Api.get('/api/auth/me.php');
+      if (res.success && res.user) {
+        this._setUser(res.user);
+        return res.user;
+      }
+    } catch {
+      this._setUser(null);
     }
-
-    const user = {
-      id: Date.now(),
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      role: 'user',
-    };
-    users.push(user);
-    localStorage.setItem('afrochick-users', JSON.stringify(users));
-
-    const session = { id: user.id, name: user.name, email: user.email, role: user.role };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(session));
-    return { success: true, user: session };
+    return null;
   },
 
-  logout() {
-    localStorage.removeItem(AUTH_KEY);
+  async login(email, password) {
+    try {
+      const res = await Api.post('/api/auth/login.php', { email, password });
+      if (res.success) {
+        this._setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      return { success: false, message: res.message || 'Login failed.' };
+    } catch (e) {
+      return { success: false, message: e.data?.message || e.message };
+    }
+  },
+
+  async signup(name, email, password) {
+    try {
+      const res = await Api.post('/api/auth/signup.php', { name, email, password });
+      if (res.success) {
+        this._setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      return { success: false, message: res.message || 'Signup failed.' };
+    } catch (e) {
+      return { success: false, message: e.data?.message || e.message };
+    }
+  },
+
+  async logout() {
+    try {
+      await Api.post('/api/auth/logout.php', {});
+    } catch {
+      /* still clear client */
+    }
+    this._setUser(null);
     window.location.replace('/index.php');
   },
 
@@ -76,56 +97,33 @@ const Auth = {
     return true;
   },
 
-  updateProfile(name, email) {
-    const users = this._getUsers();
-    const session = this.getUser();
-    if (!session) return { success: false, message: 'Not logged in.' };
-
-    const idx = users.findIndex((u) => u.id === session.id);
-    if (idx < 0) return { success: false, message: 'User not found.' };
-
-    const normalized = email.trim().toLowerCase();
-    if (users.some((u) => u.email === normalized && u.id !== session.id)) {
-      return { success: false, message: 'Email already in use.' };
+  async updateProfile(name, email) {
+    try {
+      const res = await Api.put('/api/auth/profile.php', { name, email });
+      if (res.success) {
+        this._setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      return { success: false, message: res.message };
+    } catch (e) {
+      return { success: false, message: e.data?.message || e.message };
     }
-
-    users[idx].name = name.trim();
-    users[idx].email = normalized;
-    localStorage.setItem('afrochick-users', JSON.stringify(users));
-
-    const updated = { ...session, name: users[idx].name, email: users[idx].email };
-    localStorage.setItem(AUTH_KEY, JSON.stringify(updated));
-    return { success: true, user: updated };
   },
 
-  updatePassword(currentPassword, newPassword) {
-    const users = this._getUsers();
-    const session = this.getUser();
-    if (!session) return { success: false, message: 'Not logged in.' };
 
-    const idx = users.findIndex((u) => u.id === session.id);
-    if (idx < 0 || users[idx].password !== currentPassword) {
-      return { success: false, message: 'Current password is incorrect.' };
-    }
-    if (newPassword.length < 8) {
-      return { success: false, message: 'New password must be at least 8 characters.' };
-    }
-
-    users[idx].password = newPassword;
-    localStorage.setItem('afrochick-users', JSON.stringify(users));
-    return { success: true, message: 'Password updated successfully.' };
-  },
+  async updatePassword(currentPassword, newPassword) {
 
 
   _getUsers() {
+
     try {
-      const data = localStorage.getItem('afrochick-users');
-      if (data) return JSON.parse(data);
-    } catch { /* empty */ }
-    return [
-      { id: 1, name: 'Demo User', email: 'demo@afrochick.com', password: 'demo1234', role: 'user' },
-      { id: 2, name: 'Admin', email: 'admin@afrochick.com', password: 'admin1234', role: 'admin' },
-    ];
+      const res = await Api.put('/api/auth/password.php', { currentPassword, newPassword });
+      return res.success
+        ? { success: true, message: res.message }
+        : { success: false, message: res.message };
+    } catch (e) {
+      return { success: false, message: e.data?.message || e.message };
+    }
   },
 };
 
@@ -188,4 +186,9 @@ function clearFormErrors(form) {
   form.querySelectorAll('.input-error').forEach((el) => el.classList.remove('input-error'));
 }
 
-document.addEventListener('DOMContentLoaded', initAuthNav);
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof Api !== 'undefined') {
+    await Auth.refresh();
+  }
+  initAuthNav();
+});
