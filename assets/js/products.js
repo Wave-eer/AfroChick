@@ -48,7 +48,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   render();
 
   function getFiltered() {
+
     return allProducts.filter((p) => {
+
+
+    const source = typeof ProductStore !== 'undefined' ? ProductStore.getApproved() : MOCK_PRODUCTS.filter((p) => p.status === 'approved');
+    return source.filter((p) => {
+
+    return MOCK_PRODUCTS.filter((p) => {
+      if (p.status !== 'approved') return false;
       if (activeCategory !== 'All' && p.category !== activeCategory) return false;
       if (!query) return true;
       const hay = [p.name, p.category, p.description, ...(p.ingredients || []), ...(p.benefits || [])].join(' ').toLowerCase();
@@ -82,7 +90,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function openModal(id) {
+
     const p = allProducts.find((x) => x.id === id);
+
+    const p = (typeof ProductStore !== 'undefined' ? ProductStore.getAll() : MOCK_PRODUCTS).find((x) => x.id === id);
+
+    const p = MOCK_PRODUCTS.find((x) => x.id === id);
+
+
     if (!p || !modal) return;
 
     document.getElementById('modal-body').innerHTML = `
