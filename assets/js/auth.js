@@ -62,6 +62,7 @@ const Auth = {
     return true;
   },
 
+
   isAdmin() {
     return this.getUser()?.role === 'admin';
   },
@@ -115,6 +116,7 @@ const Auth = {
     return { success: true, message: 'Password updated successfully.' };
   },
 
+
   _getUsers() {
     try {
       const data = localStorage.getItem('afrochick-users');
@@ -142,6 +144,7 @@ function initAuthNav() {
     signupBtn?.classList.add('hidden');
     userMenu?.classList.remove('hidden');
     if (userName) userName.textContent = user.name.split(' ')[0];
+
     if (user.role === 'admin') {
       document.getElementById('nav-admin-link')?.classList.remove('hidden');
     }
