@@ -4,6 +4,7 @@
 
 <div class="toast-container" id="toast-container"></div>
 
+<script src="<?= ASSETS_URL ?>/js/api.js"></script>
 <script src="<?= ASSETS_URL ?>/js/auth.js"></script>
 <script src="<?= ASSETS_URL ?>/js/mockData.js"></script>
 <script src="<?= ASSETS_URL ?>/js/admin-store.js"></script>

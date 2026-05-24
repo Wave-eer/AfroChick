@@ -55,6 +55,7 @@
         </div>
     </footer>
 
+    <script src="<?= ASSETS_URL ?>/js/api.js"></script>
     <script src="<?= ASSETS_URL ?>/js/auth.js"></script>
     <script src="<?= ASSETS_URL ?>/js/main.js"></script>
     <?php if (!empty($extraJs)): ?>

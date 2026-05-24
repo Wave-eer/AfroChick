@@ -40,6 +40,6 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <?php
-$extraJs = ['mockData.js', 'admin-store.js', 'products.js'];
+$extraJs = ['mockData.js', 'api.js', 'admin-store.js', 'products.js'];
 require_once __DIR__ . '/includes/footer.php';
 ?>

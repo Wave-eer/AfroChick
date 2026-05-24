@@ -1,153 +1,101 @@
 /**
- * Afrochick — Admin data store (localStorage)
+ * Afrochick — Admin data store (MySQL via API)
  */
-const STORAGE_KEYS = {
-  products: 'afrochick-products',
-  submissions: 'afrochick-submissions',
-  analyses: 'afrochick-analyses',
-  users: 'afrochick-users',
-  settings: 'afrochick-admin-settings',
-};
-
 const ProductStore = {
-  init() {
-    if (!localStorage.getItem(STORAGE_KEYS.products)) {
-      localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(MOCK_PRODUCTS));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.analyses)) {
-      localStorage.setItem(
-        STORAGE_KEYS.analyses,
-        JSON.stringify([
-          { id: 1, type: 'skin', userEmail: 'demo@afrochick.com', skinType: 'Combination', createdAt: daysAgo(2) },
-          { id: 2, type: 'hair', userEmail: 'demo@afrochick.com', hairType: 'Curly', createdAt: daysAgo(5) },
-          { id: 3, type: 'skin', userEmail: 'amara@example.com', skinType: 'Oily', createdAt: daysAgo(7) },
-        ])
-      );
-    }
+  _cache: null,
+
+  invalidate() {
+    this._cache = null;
   },
 
-  getAll() {
-    this.init();
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.products) || '[]');
-    } catch {
-      return [...MOCK_PRODUCTS];
-    }
+  async getAll() {
+    if (this._cache) return this._cache;
+    const res = await Api.get('/api/products.php');
+    this._cache = res.data || [];
+    return this._cache;
   },
 
-  getApproved() {
-    return this.getAll().filter((p) => p.status === 'approved');
+  async getApproved() {
+    const res = await Api.get('/api/products.php?status=approved');
+    return res.data || [];
   },
 
-  getById(id) {
-    return this.getAll().find((p) => p.id === Number(id));
+  async getById(id) {
+    const res = await Api.get(`/api/product.php?id=${id}`);
+    return res.data;
   },
 
-  save(product) {
-    const list = this.getAll();
+  async save(product) {
     const payload = {
-      id: product.id || Date.now(),
-      name: product.name.trim(),
+      name: product.name,
       category: product.category,
       status: product.status || 'approved',
       image: product.image || '🧴',
       price: product.price || '$0',
-      ingredients: Array.isArray(product.ingredients)
-        ? product.ingredients
-        : parseList(product.ingredients),
+      ingredients: Array.isArray(product.ingredients) ? product.ingredients : parseList(product.ingredients),
       benefits: Array.isArray(product.benefits) ? product.benefits : parseList(product.benefits),
-      description: product.description.trim(),
-      updatedAt: new Date().toISOString(),
+      description: product.description,
     };
 
-    const idx = list.findIndex((p) => p.id === payload.id);
-    if (idx >= 0) list[idx] = { ...list[idx], ...payload };
-    else list.push({ ...payload, createdAt: new Date().toISOString() });
-
-    localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(list));
-    return payload;
+    let res;
+    if (product.id) {
+      res = await Api.put(`/api/product.php?id=${product.id}`, payload);
+    } else {
+      res = await Api.post('/api/products.php', payload);
+    }
+    this.invalidate();
+    return res.data;
   },
 
-  delete(id) {
-    const list = this.getAll().filter((p) => p.id !== Number(id));
-    localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(list));
+  async delete(id) {
+    await Api.delete(`/api/product.php?id=${id}`);
+    this.invalidate();
   },
 };
 
 const AdminStore = {
-  getSubmissions() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.submissions) || '[]');
-    } catch {
-      return [];
-    }
+  async getSubmissions() {
+    const res = await Api.get('/api/submissions.php');
+    return res.data || [];
   },
 
-  getAnalyses() {
-    ProductStore.init();
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.analyses) || '[]');
-    } catch {
-      return [];
-    }
+  async getAnalyses() {
+    const res = await Api.get('/api/analyses.php');
+    return res.data || [];
   },
 
-  getUsers() {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.users);
-      if (data) return JSON.parse(data);
-    } catch { /* empty */ }
-    return Auth._getUsers();
+  async getStats() {
+    const res = await Api.get('/api/admin/stats.php');
+    return res.data;
   },
 
-  getStats() {
-    const products = ProductStore.getAll();
-    const submissions = this.getSubmissions();
-    const analyses = this.getAnalyses();
-    const users = this.getUsers();
-
-    const skinCount = analyses.filter((a) => a.type === 'skin').length;
-    const hairCount = analyses.filter((a) => a.type === 'hair').length;
-
-    return {
-      totalUsers: users.length,
-      totalAnalyses: analyses.length,
-      skinAnalyses: skinCount,
-      hairAnalyses: hairCount,
-      pendingSubmissions: submissions.filter((s) => s.status === 'pending').length,
-      approvedProducts: products.filter((p) => p.status === 'approved').length,
-      totalProducts: products.length,
-      pendingProducts: products.filter((p) => p.status === 'pending').length,
-    };
+  async getUsers() {
+    const res = await Api.get('/api/admin/users.php');
+    return res.data || [];
   },
 
-  getSettings() {
+  async getSettings() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}');
+      const res = await Api.get('/api/admin/settings.php');
+      return res.data || {};
     } catch {
       return {};
     }
   },
 
-  saveSettings(settings) {
-    const merged = { ...this.getSettings(), ...settings };
-    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(merged));
-    return merged;
+  async saveSettings(settings) {
+    const res = await Api.put('/api/admin/settings.php', settings);
+    return res.data;
   },
 };
 
 function parseList(str) {
   if (!str) return [];
+  if (Array.isArray(str)) return str;
   return String(str)
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
-}
-
-function daysAgo(n) {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d.toISOString();
 }
 
 function formatDate(iso) {
@@ -158,5 +106,3 @@ function formatDate(iso) {
     year: 'numeric',
   });
 }
-
-ProductStore.init();

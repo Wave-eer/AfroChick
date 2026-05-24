@@ -32,6 +32,9 @@ $adminPage = $adminPage ?? 'dashboard';
             <a href="/admin/products.php" class="admin-nav-link <?= $adminPage === 'products' ? 'active' : '' ?>">
                 <i data-lucide="package"></i> Products
             </a>
+            <a href="/admin/users.php" class="admin-nav-link <?= $adminPage === 'users' ? 'active' : '' ?>">
+                <i data-lucide="users"></i> Users
+            </a>
             <a href="/admin/settings.php" class="admin-nav-link <?= $adminPage === 'settings' ? 'active' : '' ?>">
                 <i data-lucide="settings"></i> Settings
             </a>

@@ -49,7 +49,10 @@ require_once __DIR__ . '/includes/header.php';
             <p class="auth-footer-text">
                 Don't have an account? <a href="/signup.php">Sign up</a>
             </p>
-            <p class="auth-demo-note">Demo: demo@afrochick.com / demo1234</p>
+            <p class="auth-demo-note">
+                Admin: admin@afrochick.com / admin1234<br>
+                User: demo@afrochick.com / demo1234
+            </p>
         </div>
     </div>
 </section>
