@@ -21,6 +21,27 @@ afrochick/
 ├── hair-analysis.php      # Hair wizard (stub)
 ├── products.php           # Product center
 ├── submit-product.php       # Submit product form
+=======
+├── index.php              # Landing page
+├── includes/
+│   ├── config.php         # Site constants & helpers
+│   ├── header.php         # Navbar, <head>, opening layout
+│   └── footer.php         # Footer, scripts
+├── assets/
+│   ├── css/
+│   │   └── style.css      # Design system & page styles
+│   └── js/
+│       └── main.js        # Interactions & animations
+├── api/
+│   └── newsletter.php     # Newsletter subscription endpoint
+├── login.php              # (planned) Auth
+├── signup.php             # (planned) Auth
+├── dashboard.php          # (planned) Category selection
+├── skin-analysis.php      # (planned) Skin wizard
+├── hair-analysis.php      # (planned) Hair wizard
+├── products.php           # (planned) Product center
+├── submit-product.php     # (planned) Product submission
+└── admin/                 # (planned) Admin dashboard
 ```
 
 ## Run Locally
@@ -59,5 +80,10 @@ Open [http://localhost:8888](http://localhost:8888)
 2. ✅ Auth pages (login, signup, forgot password)
 3. ✅ Dashboard (Analyze) + product pages
 4. Analysis wizards (skin & hair)
+=======
+2. Auth pages (login, signup, forgot password)
+3. Dashboard & analysis wizards
+4. Product center & submission
+
 5. Admin dashboard
 6. Supabase integration
