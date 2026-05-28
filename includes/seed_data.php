@@ -1,8 +1,21 @@
 <?php
 
 const SEED_USERS = [
-    ['name' => 'Demo User', 'email' => 'demo@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    // 3 admins
     ['name' => 'Admin', 'email' => 'admin@afrochick.com', 'password' => 'admin1234', 'role' => 'admin'],
+    ['name' => 'Sarah Okonkwo', 'email' => 'admin2@afrochick.com', 'password' => 'admin1234', 'role' => 'admin'],
+    ['name' => 'James Lindberg', 'email' => 'admin3@afrochick.com', 'password' => 'admin1234', 'role' => 'admin'],
+    // 10 users
+    ['name' => 'Demo User', 'email' => 'demo@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Amara Kofi', 'email' => 'user2@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Joel Richards', 'email' => 'user3@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Sofia Laurent', 'email' => 'user4@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Chioma Adeyemi', 'email' => 'user5@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Marcus Chen', 'email' => 'user6@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Fatima Hassan', 'email' => 'user7@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Elena Vasquez', 'email' => 'user8@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'David Osei', 'email' => 'user9@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
+    ['name' => 'Priya Sharma', 'email' => 'user10@afrochick.com', 'password' => 'demo1234', 'role' => 'user'],
 ];
 
 const SEED_PRODUCTS = [
@@ -111,5 +124,11 @@ const SEED_PRODUCTS = [
 const SEED_ANALYSES = [
     ['userEmail' => 'demo@afrochick.com', 'type' => 'skin', 'profile_label' => 'Combination'],
     ['userEmail' => 'demo@afrochick.com', 'type' => 'hair', 'profile_label' => 'Curly'],
+    ['userEmail' => 'user2@afrochick.com', 'type' => 'skin', 'profile_label' => 'Oily'],
+    ['userEmail' => 'user3@afrochick.com', 'type' => 'hair', 'profile_label' => 'Wavy'],
+    ['userEmail' => 'user5@afrochick.com', 'type' => 'skin', 'profile_label' => 'Sensitive'],
+    ['userEmail' => 'user8@afrochick.com', 'type' => 'hair', 'profile_label' => 'Coily'],
+
     ['userEmail' => 'amara@example.com', 'type' => 'skin', 'profile_label' => 'Oily'],
+
 ];

@@ -5,6 +5,10 @@ services:
       - "8888:80"
     volumes:
       - .:/var/www/html
+    env_file:
+      - .env
+
+
     depends_on:
       db:
         condition: service_healthy
@@ -34,6 +38,22 @@ services:
       timeout: 5s
       retries: 12
     restart: unless-stopped
+
+
+  # Afrochick database UI — NOT the fellow-saas phpMyAdmin on :8081
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: afrochick
+      PMA_PASSWORD: afrochick_secret
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
 
 volumes:
   db_data:

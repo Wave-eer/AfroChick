@@ -21,6 +21,27 @@ require_once __DIR__ . '/includes/layout-start.php';
 
 <section class="glass-card admin-panel">
     <div class="panel-header">
+        <h2 class="panel-title">Users</h2>
+        <a href="/admin/users.php" class="form-link">View all users →</a>
+    </div>
+    <div class="table-wrap">
+        <table class="admin-table" id="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</section>
+
+<section class="glass-card admin-panel">
+    <div class="panel-header">
         <h2 class="panel-title">Recent analyses</h2>
         <a href="/admin/products.php" class="form-link">Manage products →</a>
     </div>

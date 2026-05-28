@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const analyses = await AdminStore.getAnalyses();
     renderAnalysesTable(analyses);
 
+
+    const users = await AdminStore.getUsers();
+    renderUsersTable(users);
+
+
     const submissions = await AdminStore.getSubmissions();
     renderSubmissionsTable(submissions.filter((s) => s.status === 'pending'));
   } catch (e) {
@@ -86,9 +91,38 @@ function renderProductChart(s) {
     </div>`;
 }
 
+
+function renderUsersTable(rows) {
+  const tbody = document.querySelector('#users-table tbody');
+  if (!tbody) return;
+
+  const list = rows.slice(0, 13);
+  tbody.innerHTML =
+    list.length === 0
+      ? '<tr><td colspan="5" class="table-empty">No users in database. <a href="/admin/users.php">Manage users</a> or run migration.</td></tr>'
+      : list
+          .map(
+            (u) => `
+      <tr>
+        <td>${u.id}</td>
+        <td>${escapeHtml(u.name)}</td>
+        <td>${escapeHtml(u.email)}</td>
+        <td><span class="status-badge ${u.role === 'admin' ? 'status-approved' : 'status-pending'}">${u.role}</span></td>
+        <td>${formatDate(u.createdAt)}</td>
+      </tr>`
+          )
+          .join('');
+}
+
 function renderAnalysesTable(rows) {
   const tbody = document.querySelector('#analyses-table tbody');
   if (!tbody) return;
+
+
+function renderAnalysesTable(rows) {
+  const tbody = document.querySelector('#analyses-table tbody');
+  if (!tbody) return;
+
 
   const list = rows.slice(0, 8);
   tbody.innerHTML =

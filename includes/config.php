@@ -2,6 +2,8 @@
 /**
  * Afrochick — Site Configuration
  */
+require_once __DIR__ . '/env.php';
+loadEnv();
 
 define('SITE_NAME', 'Afrochick');
 define('SITE_TAGLINE', 'Skin & Hair Analysis Center');

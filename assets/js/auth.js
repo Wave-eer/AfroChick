@@ -112,6 +112,10 @@ const Auth = {
 
 
   async updatePassword(currentPassword, newPassword) {
+=======
+
+
+  async updatePassword(currentPassword, newPassword) {
 
 
   _getUsers() {

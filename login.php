@@ -16,6 +16,25 @@ require_once __DIR__ . '/includes/header.php';
 <section class="section section-compact">
     <div class="container container-narrow">
         <div class="glass-card auth-card reveal">
+            <!-- Premium Center Logo -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 10px rgba(212, 175, 55, 0.25)); margin: 0 auto;">
+                  <defs>
+                    <linearGradient id="authGold" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#cca43b" />
+                      <stop offset="50%" stop-color="#e5c185" />
+                      <stop offset="100%" stop-color="#b08c25" />
+                    </linearGradient>
+                    <linearGradient id="authTerra" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#b55331" />
+                      <stop offset="100%" stop-color="#e0c6ad" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M50 12C29.01 12 12 29.01 12 50C12 58.55 14.83 66.45 19.61 72.82C18.15 75.87 18.52 79.57 21.05 82.1C23.98 85.03 28.53 85.39 31.86 83.21C37.07 86.87 43.34 89 50.1 89C57.48 89 64.28 86.41 69.75 82.1C72.83 83.74 76.81 83.33 79.5 80.64C82.19 77.95 82.6 73.97 80.96 70.89C85.83 65.28 89 58 89 50C89 29.01 70.99 12 50 12ZM50 82C32.33 82 18 67.67 18 50C18 32.33 32.33 18 50 18C67.67 18 82 32.33 82 50C82 67.67 67.67 82 50 82Z" fill="url(#authGold)" />
+                  <path d="M48 35C48 35 52.5 35 54.5 38.5C56.5 42 54 46.5 54 46.5C54 46.5 58.5 47.5 59.5 51C60.5 54.5 56.5 56.5 55 58C53.5 59.5 54.5 62 57 63C59.5 64 58.5 68 54.5 69.5C50.5 71 44.5 70.5 42 64.5C40 59.7 41.5 53.5 44 48" stroke="url(#authTerra)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-top: 0.5rem; color: var(--text);">AfroChic</h3>
+            </div>
             <form id="login-form" class="auth-form" novalidate>
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -49,7 +68,7 @@ require_once __DIR__ . '/includes/header.php';
             <p class="auth-footer-text">
                 Don't have an account? <a href="/signup.php">Sign up</a>
             </p>
-            <p class="auth-demo-note">Demo: demo@afrochick.com / demo1234</p>
+
         </div>
     </div>
 </section>
