@@ -87,11 +87,24 @@ $currentPage = $currentPage ?? 'home';
                   <path d="M50 12C29.01 12 12 29.01 12 50C12 58.55 14.83 66.45 19.61 72.82C18.15 75.87 18.52 79.57 21.05 82.1C23.98 85.03 28.53 85.39 31.86 83.21C37.07 86.87 43.34 89 50.1 89C57.48 89 64.28 86.41 69.75 82.1C72.83 83.74 76.81 83.33 79.5 80.64C82.19 77.95 82.6 73.97 80.96 70.89C85.83 65.28 89 58 89 50C89 29.01 70.99 12 50 12ZM50 82C32.33 82 18 67.67 18 50C18 32.33 32.33 18 50 18C67.67 18 82 32.33 82 50C82 67.67 67.67 82 50 82Z" fill="url(#logoGold)" />
                   <path d="M48 35C48 35 52.5 35 54.5 38.5C56.5 42 54 46.5 54 46.5C54 46.5 58.5 47.5 59.5 51C60.5 54.5 56.5 56.5 55 58C53.5 59.5 54.5 62 57 63C59.5 64 58.5 68 54.5 69.5C50.5 71 44.5 70.5 42 64.5C40 59.7 41.5 53.5 44 48" stroke="url(#logoTerra)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
+
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="navbar-logo">
+
+                <span class="logo-icon">✦</span>
                 <span class="logo-text"><?= SITE_NAME ?></span>
             </a>
 
             <nav class="navbar-nav" id="navbar-nav">
                 <a href="/index.php" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
+
+
+                <a href="/" class="nav-link <?= $currentPage === 'home' ? 'active' : '' ?>">Home</a>
+
                 <a href="/dashboard.php" class="nav-link <?= $currentPage === 'analyze' ? 'active' : '' ?>">Analyze</a>
                 <a href="/products.php" class="nav-link <?= $currentPage === 'products' ? 'active' : '' ?>">Products</a>
                 <a href="/submit-product.php" class="nav-link <?= $currentPage === 'submit' ? 'active' : '' ?>">Submit</a>
@@ -102,14 +115,21 @@ $currentPage = $currentPage ?? 'home';
                     <i data-lucide="sun" class="icon-sun"></i>
                     <i data-lucide="moon" class="icon-moon"></i>
                 </button>
+
                 <a href="/signup.php" class="btn btn-secondary btn-sm nav-signup" id="nav-signup-btn">Sign up</a>
                 <a href="/login.php" class="btn btn-ghost btn-sm nav-login" id="nav-login-btn">Login</a>
                 <div class="nav-user-menu hidden" id="nav-user-menu">
                     <span class="nav-user-name" id="nav-user-name">User</span>
+
                     <a href="/admin/index.php" class="btn btn-ghost btn-sm hidden" id="nav-admin-link">Admin</a>
                     <a href="/dashboard.php" class="btn btn-ghost btn-sm">Analyze</a>
                     <button type="button" class="btn btn-ghost btn-sm" id="nav-logout-btn">Logout</button>
                 </div>
+                    <a href="/dashboard.php" class="btn btn-ghost btn-sm">Analyze</a>
+                    <button type="button" class="btn btn-ghost btn-sm" id="nav-logout-btn">Logout</button>
+                </div>
+                <a href="/login.php" class="btn btn-ghost btn-sm nav-login">Login</a>
+
                 <button class="btn-icon hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
                     <i data-lucide="menu"></i>
                 </button>

@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const analyses = await AdminStore.getAnalyses();
     renderAnalysesTable(analyses);
 
+
     const users = await AdminStore.getUsers();
     renderUsersTable(users);
+
 
     const submissions = await AdminStore.getSubmissions();
     renderSubmissionsTable(submissions.filter((s) => s.status === 'pending'));
@@ -89,6 +91,7 @@ function renderProductChart(s) {
     </div>`;
 }
 
+
 function renderUsersTable(rows) {
   const tbody = document.querySelector('#users-table tbody');
   if (!tbody) return;
@@ -114,6 +117,12 @@ function renderUsersTable(rows) {
 function renderAnalysesTable(rows) {
   const tbody = document.querySelector('#analyses-table tbody');
   if (!tbody) return;
+
+
+function renderAnalysesTable(rows) {
+  const tbody = document.querySelector('#analyses-table tbody');
+  if (!tbody) return;
+
 
   const list = rows.slice(0, 8);
   tbody.innerHTML =

@@ -62,6 +62,7 @@ const AdminStore = {
   async getAnalyses() {
     const res = await Api.get('/api/analyses.php');
     return res.data || [];
+
   },
 
   async getStats() {
@@ -72,6 +73,13 @@ const AdminStore = {
   async getUsers() {
     const res = await Api.get('/api/admin/users.php');
     return res.data || [];
+
+  },
+
+  async getStats() {
+    const res = await Api.get('/api/admin/stats.php');
+    return res.data;
+
   },
 
   async getSettings() {

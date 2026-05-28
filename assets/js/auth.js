@@ -83,6 +83,7 @@ const Auth = {
     return true;
   },
 
+
   isAdmin() {
     return this.getUser()?.role === 'admin';
   },
@@ -109,7 +110,16 @@ const Auth = {
     }
   },
 
+
   async updatePassword(currentPassword, newPassword) {
+=======
+
+
+  async updatePassword(currentPassword, newPassword) {
+
+
+  _getUsers() {
+
     try {
       const res = await Api.put('/api/auth/password.php', { currentPassword, newPassword });
       return res.success
@@ -136,6 +146,7 @@ function initAuthNav() {
     signupBtn?.classList.add('hidden');
     userMenu?.classList.remove('hidden');
     if (userName) userName.textContent = user.name.split(' ')[0];
+
     if (user.role === 'admin') {
       document.getElementById('nav-admin-link')?.classList.remove('hidden');
     }

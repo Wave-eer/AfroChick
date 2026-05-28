@@ -1184,6 +1184,7 @@ em {
   }
 }
 
+
 /* ═══════════════════════════════════════════════════════════
    Page utilities & inner pages
    ═══════════════════════════════════════════════════════════ */
@@ -1733,6 +1734,7 @@ body[class*="page-"] .navbar {
     font-size: 0.8125rem;
   }
 }
+
 
 /* ═══════════════════════════════════════════════════════════
    AfroChic Premium New Feature Styles
@@ -2619,5 +2621,6 @@ body[class*="page-"] .navbar {
     transform: translateY(0);
   }
 }
+
 
 

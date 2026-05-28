@@ -7,6 +7,8 @@ services:
       - .:/var/www/html
     env_file:
       - .env
+
+
     depends_on:
       db:
         condition: service_healthy
@@ -37,6 +39,7 @@ services:
       retries: 12
     restart: unless-stopped
 
+
   # Afrochick database UI — NOT the fellow-saas phpMyAdmin on :8081
   phpmyadmin:
     image: phpmyadmin:latest
@@ -50,6 +53,7 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+
 
 volumes:
   db_data:

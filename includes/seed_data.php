@@ -128,4 +128,7 @@ const SEED_ANALYSES = [
     ['userEmail' => 'user3@afrochick.com', 'type' => 'hair', 'profile_label' => 'Wavy'],
     ['userEmail' => 'user5@afrochick.com', 'type' => 'skin', 'profile_label' => 'Sensitive'],
     ['userEmail' => 'user8@afrochick.com', 'type' => 'hair', 'profile_label' => 'Coily'],
+
+    ['userEmail' => 'amara@example.com', 'type' => 'skin', 'profile_label' => 'Oily'],
+
 ];
